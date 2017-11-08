@@ -9,9 +9,13 @@ var height = 400 - margin.top - margin.bottom;
 var colors = ['#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494']
 
 d3.json("hisp_uninsured_rates_json.json", function(error, data) {
-      dataset = data;
-      console.log(data);
-      makeBargraph();
+      if (error) {
+        console.log(error); //if error, load error to console
+      } else {
+        console.log(data); //if data is correct, load data to console
+        dataset = data;
+        makeBargraph(); //make a barchart
+      }
     });
 
 // code source: https://www.pshrmn.com/tutorials/d3/bar-charts/
