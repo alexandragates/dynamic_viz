@@ -9,13 +9,9 @@ var height = 400 - margin.top - margin.bottom;
 var colors = ['#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494']
 
 d3.json("hisp_uninsured_rates_json.json", function(error, data) {
-      if (error) {
-        console.log(error); //if error, load error to console
-      } else {
-        dataset = data,
-        console.log(dataset),
-        makeBargraph(); //make a barchart
-      }
+      dataset = data;
+      console.log(data);
+      makeBargraph();
     });
 
 // code source: https://www.pshrmn.com/tutorials/d3/bar-charts/
@@ -29,9 +25,14 @@ function makeBargraph() {
     .append('g')
   	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+  var years = dataset.map(function(d) {
+  	return d.year
+  });
+
   // setup x scale
   var xScale = d3.scaleBand()
-    .domain(d3.range(dataset.length))
+    //.domain(d3.extent(dataset, function(d){ return d.year; }))
+    .domain(years)
     .range([0, width])
     .padding(0.1);
   
@@ -48,7 +49,7 @@ function makeBargraph() {
   var yAxis = d3.axisLeft(yScale);
 
   // draw the axes
-  svg.append('g')
+  var xAxisEle = svg.append('g')
   	.classed('x axis', true)
   	.attr('transform', 'translate(0,' + height + ')')
   	.call(xAxis);
@@ -57,6 +58,15 @@ function makeBargraph() {
   	.classed('y axis', true)
   	.call(yAxis);
 
+  // add a label to the xAxis
+  var xText = svg.append('text')             
+      .attr("transform",
+            "translate(" + (width/2) + " ," + 
+                           (height + 50) + ")")
+      .style("text-anchor", "middle")
+      .style('font-size', 14)
+      .text("Year");
+  
   // add a label to the yAxis
   var yText = yAxisEle.append('text')
   	.attr('transform', 'rotate(-90)translate(-' + height/2 + ',0)')
