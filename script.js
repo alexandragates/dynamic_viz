@@ -20,7 +20,7 @@ function makeBargraph() {
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append('g')
-  	.attr('transform', 'translate(' + margin + ',' + margin + ')');
+  	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   // setup x scale
   var xScale = d3.scaleBand()
@@ -33,14 +33,14 @@ function makeBargraph() {
   
   // setup y scale
   var yScale = d3.scaleLinear()
-    .domain(0, d3.max(dataset, function (d) { return d.percent_hisp_uninsured_year; }))
+    .domain([0, d3.max(dataset, function (d) { return d.percent_hisp_uninsured_year; })])
     .range([height, 0])
     .nice();
 
   var xAxis = d3.axisBottom(xScale);
   var yAxis = d3.axisLeft(yScale);
 
-// draw the axes
+  // draw the axes
   svg.append('g')
   	.classed('x axis', true)
   	.attr('transform', 'translate(0,' + height + ')')
@@ -50,4 +50,35 @@ function makeBargraph() {
   	.classed('y axis', true)
   	.call(yAxis);
 
+  // add a label to the yAxis
+  var yText = yAxisEle.append('text')
+  	.attr('transform', 'rotate(-90)translate(-' + height/2 + ',0)')
+  	.style('text-anchor', 'middle')
+  	.style('fill', 'black')
+  	.attr('dy', '-2.5em')
+  	.style('font-size', 14)
+  	.text('Hispanic Uninsured Rate');
+  
+  var barHolder = svg.append('g')
+  	.classed('bar-holder', true);
+
+  var bars = barHolder.selectAll('rect.bar')
+    .data(dataset)
+  .enter().append('rect')
+    .classed('bar', true)
+    .attr('x', function(d, i) {
+      // the x value is determined using the
+      // year of the datum
+      return xScale(d.year)
+    })
+    .attr('width', bandwidth)
+    .attr('y', function(d) {
+      // the y position is determined by the datum's uninsured rate
+      // this value is the top edge of the rectangle
+      return yScale(d.percent_hisp_uninsured_year);
+    })
+    .attr('height', function(d) {
+      // the bar's height should align it with the base of the chart (y=0)
+      return height - yScale(d.percent_hisp_uninsured_year);
+    });
 };
