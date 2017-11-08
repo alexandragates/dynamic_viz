@@ -4,117 +4,137 @@ var margin = {top: 100, right: 75, bottom: 125, left: 50}
 var width = 800 - margin.left - margin.right;
 var height = 400 - margin.top - margin.bottom;
 
-// create color palette
-// from colorbrewer: http://colorbrewer2.org/?type=qualitative&scheme=Set2&n=7
-var colors = ['#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494']
-
-d3.json("hisp_uninsured_rates_json.json", function(error, data) {
+d3.json('hisp_uninsured_rates_json.json', function(error, data) {
       if (error) {
         console.log(error); //if error, load error to console
       } else {
         console.log(data); //if data is correct, load data to console
         dataset = data.sort(function(x, y){
-          return d3.ascending(x.year, y.percent_hisp_uninsured_year); }) //create a variable and assign data to it
+          return d3.ascending(x.year, y.percent_hisp_uninsured_year); }) //for the record: I would never put this data in ascending order like this.
         makeBargraph(); //make a barchart
       }
     });
 
-// code source: https://www.pshrmn.com/tutorials/d3/bar-charts/
-
 function makeBargraph() {
+  
   // create and dertermine size of SVG
-  var svg = d3.select("#chart")
-    .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+  var svg = d3.select('#chart')
+    .append('svg')
+    .attr('width', width + margin.left + margin.right)
+    .attr('height', height + margin.top + margin.bottom)
     .append('g')
-  	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  	.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
+  // create a dataset of just the values that will populate the x axis
   var years = dataset.map(function(d) {
   	return d.year
   });
 
-  // setup x scale
+  // setup x and y scales
   var xScale = d3.scaleBand()
     .domain(years)
     .range([0, width])
     .padding(0.1);
   
-  // width of the bar is determined by the x scale
-  var bandwidth = xScale.bandwidth()
-  
-  // setup y scale
   var yScale = d3.scaleLinear()
     .domain([0, d3.max(dataset, function (d) { return d.percent_hisp_uninsured_year; })])
     .range([0, height])
     .nice();
 
-  var xAxis = d3.axisTop(xScale);
-  var yAxis = d3.axisLeft(yScale);
-
   // draw the axes
-  var xAxisEle = svg.append('g')
-  	//.classed('x axis', true)
+  var xAxisDraw = svg.append('g')
   	.attr('transform', 'translate(0,' + 30 + ')')
-  	.call(xAxis);
+  	.attr('class', 'xaxis')
+  	.call(d3.axisTop(xScale));
 
-  var yAxisEle = svg.append('g')
-  	//.classed('y axis', true)
+  var yAxisDraw = svg.append('g')
   	.attr('transform', 'translate(0,' + 30 + ')')
-  	.call(yAxis);
+  	.attr('class', 'yaxis')
+  	.call(d3.axisLeft(yScale));
 
-  // add a label to the xAxis
+  // add labels to the xAxis and yAxis
   var xText = svg.append('text')             
-      .attr("transform", "translate(" + (width/2) + " ," + (0) + ")")
-      .attr("class", "xText")
-      .style("text-anchor", "middle")
-      .style('font-size', 14)
-      .text("Year");
+    .attr('transform', 'translate(' + (width/2) + ' ,' + (0) + ')')
+    .attr('class', 'xText')
+    .style('text-anchor', 'middle')
+    .text('Year');
   
-  // add a label to the yAxis
-  var yText = yAxisEle.append('text')
+  var yText = yAxisDraw.append('text')
   	.attr('transform', 'rotate(-90)translate(-' + height/2 + ',0)')
-  	.attr("class", "yText")
+  	.attr('class', 'yText')
   	.attr('dy', '-2.5em')
   	.style('text-anchor', 'middle')
-  	.style('fill', 'black')
   	.text('Hispanic Uninsured Rate (%)');
 
   // add title
-  var title = svg.append("text")
-  		.attr("transform", "translate(" + (-40) + " ," + (-60) + ")")
-  		.attr("class", "title")
-  		.style("fill", "black")
-  		.text("The Hispanic uninsured rate has decreased since 2012.")
+  var title = svg.append('text')
+  	.attr('transform', 'translate(' + (-40) + ' ,' + (-60) + ')')
+  	.attr('class', 'title')
+  	.text('The Hispanic uninsured rate has decreased since 2012.')
 
   // add subtitle
-  var subtitle = svg.append("text")
-  		.attr("transform", "translate(" + (-40) + " ," + (-35) + ")")
-  		.attr("class", "subtitle")
-  		.style("fill", "black")
-  		.text("Percent of Hispanics who are Uninsured, 2012 - 2016")
-
+  var subtitle = svg.append('text')
+  	.attr('transform', 'translate(' + (-40) + ' ,' + (-35) + ')')
+  	.attr('class', 'subtitle')
+  	.text('Percent of Hispanics who are Uninsured, 2012 - 2016')
+  
   // draw the bars!!!
-  var barHolder = svg.append('g')
-  	.classed('bar-holder', true);
+  var bars = svg.selectAll('bar')
+  	.data(dataset)
+    .enter().append('rect')
+  	.attr('x', function(d, i) {return xScale(d.year)})
+    .attr('width', xScale.bandwidth())
+    .attr('y', function(d) {return 30;}) 
+    .attr('height', function(d) {return yScale(d.percent_hisp_uninsured_year);}) 
+    .classed('colorme', function(d)
+    	{if (d.percent_hisp_uninsured_year < 20) { return true}
+    	else { return false}})
+    .classed('dontcolorme', function(d)
+    	{if (d.percent_hisp_uninsured_year < 20) { return false}
+    	else { console.log("true"); return true}})
 
-  var bars = barHolder.selectAll('rect.bar')
-    .data(dataset)
-  .enter().append('rect')
-    .classed('bar', true)
-    .attr('x', function(d, i) {
-      // the x value is determined using the
-      // year of the datum
-      return xScale(d.year)
-    })
-    .attr('width', bandwidth)
-    .attr('y', function(d) {
-      // the y position is determined by the uninsured rate
-      // this value is the bottom edge of the rectangle
-      return 30;
-    })
-    .attr('height', function(d) {
-      // the bar's height should align it with the base of the chart (y=0)
-      return yScale(d.percent_hisp_uninsured_year);
-    });
+var legend1 = svg.append('g')
+ 	.attr('class', 'legend')
+  	.attr('height', 100)
+  	.attr('width', 100)
+
+ legend1.selectAll('rect')
+  	.data(dataset)
+  	.enter().append('rect')
+  	.attr('x', width - 550)
+  	.attr('y', height + 60)
+  	.attr('width', 15)
+  	.attr('height', 15)
+  	.classed('colorme', true)
+
+ legend1.selectAll('text')
+	.data(dataset)
+	.enter().append('text')
+	.attr('x', width - 525)
+  	.attr('y', height + 73)
+  	.attr('class', 'ltext')
+  	.text('Lowest Uninsured Rate')
+
+var legend2 = svg.append('g')
+ 	.attr('class', 'legend')
+  	.attr('height', 100)
+  	.attr('width', 100)
+
+ legend2.selectAll('rect')
+  	.data(dataset)
+  	.enter().append('rect')
+  	.attr('x', width - 300)
+  	.attr('y', height + 60)
+  	.attr('width', 15)
+  	.attr('height', 15)
+  	.classed('dontcolorme', true)
+
+ legend2.selectAll('text')
+	.data(dataset)
+	.enter().append('text')
+	.attr('x', width - 275)
+  	.attr('y', height + 73)
+  	.attr('class', 'ltext')
+  	.text('Not Lowest Uninsured Rate')
+
 };

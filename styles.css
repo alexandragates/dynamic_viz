@@ -1,32 +1,52 @@
-svg {
+
+
+/*svg {
   background-color: #f0f0f0;
 }
-
+*/
 p.source {
 	font-size: 8pt;
 	font-family: Lucidatypewriter, monospace;
+	fill:#6b6b6d;
 }
 
-rect.bar {
-  stroke-width:3px;   
+g.xaxis,
+g.yaxis {
+	font-family: Lucidatypewriter, monospace;
+	font-size: 8pt;
 }
+
+/* how do I change the color of the axis? I'd like to change the color of the 
+tick labels to #999a9c and remove the axis itself. I'd also like to add
+grid major lines. Tried using https://bl.ocks.org/d3noob/c506ac45617cf9ed39337f99f8511218
+for grid lines, but it just removed my data...*/
 
 text.title {
 	font-size: 18pt;
 	font-family: Lucidatypewriter, monospace;
-	color: #2d2e2e;
 }
 
 text.subtitle {
 	font-size: 13pt;
 	font-family: Lucidatypewriter, monospace;
-	color: #2d2e2e;
+	fill:#6b6b6d;
 }
 
+text.ltext,
 text.xText,
-text.yText,
-text.legendLabel {
-  font-size: 10pt;
-  font-family: Lucidatypewriter, monospace;
-  color: #2d2e2e;
+text.yText {
+  	font-size: 10pt;
+  	font-family: Lucidatypewriter, monospace;
+  	fill: #2d2e2e;
+  	font-style: italic;
 }
+
+rect.colorme {
+	fill: #54bb9a;
+
+}
+
+rect.dontcolorme {
+	fill: #c9c9c9;   
+}
+
