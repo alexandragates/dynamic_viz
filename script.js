@@ -18,22 +18,36 @@ function makeBargraph() {
   var svg = d3.select("#chart")
     .append("svg")
     .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom);
+    .attr("height", height + margin.top + margin.bottom)
+    .append('g')
+  	.attr('transform', 'translate(' + margin + ',' + margin + ')');
 
   // setup x scale
-  var xScale = d3.scaleBands()
-    .domain(d3.extent(dataset, function(d) {return d.year; }))
+  var xScale = d3.scaleBand()
+    .domain(d3.extent(dataset, function(d){ return d.year; }))
     .range([0, width])
-    .nice();
+    .paddingInner(0.1);
+  
+  // width of the bar is determined by the x scale
+  var bandwidth = xScale.bandwidth()
   
   // setup y scale
   var yScale = d3.scaleLinear()
-    .domain([d3.min(dataset, function (d) { return d.percent_hisp_uninsured_year; }), 
-            d3.max(dataset, function (d) { return d.percent_hisp_uninsured_year; })])
+    .domain(0, d3.max(dataset, function (d) { return d.percent_hisp_uninsured_year; }))
     .range([height, 0])
     .nice();
 
-  var g = svg.append('g')
-  	.attr('transform', 'translate(' + margin + ',' + margin + ')');
+  var xAxis = d3.axisBottom(xScale);
+  var yAxis = d3.axisLeft(yScale);
+
+// draw the axes
+  svg.append('g')
+  	.classed('x axis', true)
+  	.attr('transform', 'translate(0,' + height + ')')
+  	.call(xAxis);
+
+  var yAxisEle = svg.append('g')
+  	.classed('y axis', true)
+  	.call(yAxis);
 
 };
