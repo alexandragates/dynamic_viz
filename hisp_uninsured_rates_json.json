@@ -1,1 +1,1 @@
-[{"year":2012,"percent_hisp_uninsured_year":30.5149},{"year":2013,"percent_hisp_uninsured_year":29.859},{"year":2014,"percent_hisp_uninsured_year":24.7105},{"year":2015,"percent_hisp_uninsured_year":20.5797},{"year":2016,"percent_hisp_uninsured_year":19.0778}]
+{"year": ["2012", "2013", "2014", "2015", "2016" ], "percent_hisp_uninsured_year": [ 30.515, 29.859,  24.71,  20.58, 19.078 ]}
