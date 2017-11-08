@@ -54,20 +54,19 @@ function makeBargraph() {
 
   // draw the axes
   var xAxisEle = svg.append('g')
-  	.classed('x axis', true)
+  	//.classed('x axis', true)
   	.attr('transform', 'translate(0,' + 30 + ')')
   	.call(xAxis);
 
   var yAxisEle = svg.append('g')
-  	.classed('y axis', true)
+  	//.classed('y axis', true)
   	.attr('transform', 'translate(0,' + 30 + ')')
   	.call(yAxis);
 
   // add a label to the xAxis
   var xText = svg.append('text')             
-      .attr("transform",
-            "translate(" + (width/2) + " ," + 
-                           (0) + ")")
+      .attr("transform", "translate(" + (width/2) + " ," + (0) + ")")
+      .attr("class", "xText")
       .style("text-anchor", "middle")
       .style('font-size', 14)
       .text("Year");
@@ -75,12 +74,27 @@ function makeBargraph() {
   // add a label to the yAxis
   var yText = yAxisEle.append('text')
   	.attr('transform', 'rotate(-90)translate(-' + height/2 + ',0)')
+  	.attr("class", "yText")
+  	.attr('dy', '-2.5em')
   	.style('text-anchor', 'middle')
   	.style('fill', 'black')
-  	.attr('dy', '-2.5em')
-  	.style('font-size', 14)
-  	.text('Hispanic Uninsured Rate');
-  
+  	.text('Hispanic Uninsured Rate (%)');
+
+  // add title
+  var title = svg.append("text")
+  		.attr("transform", "translate(" + (-40) + " ," + (-60) + ")")
+  		.attr("class", "title")
+  		.style("fill", "black")
+  		.text("The Hispanic uninsured rate has decreased since 2012.")
+
+  // add subtitle
+  var subtitle = svg.append("text")
+  		.attr("transform", "translate(" + (-40) + " ," + (-35) + ")")
+  		.attr("class", "subtitle")
+  		.style("fill", "black")
+  		.text("Percent of Hispanics who are Uninsured, 2012 - 2016")
+
+  // draw the bars!!!
   var barHolder = svg.append('g')
   	.classed('bar-holder', true);
 
@@ -95,8 +109,8 @@ function makeBargraph() {
     })
     .attr('width', bandwidth)
     .attr('y', function(d) {
-      // the y position is determined by the datum's uninsured rate
-      // this value is the top edge of the rectangle
+      // the y position is determined by the uninsured rate
+      // this value is the bottom edge of the rectangle
       return 30;
     })
     .attr('height', function(d) {

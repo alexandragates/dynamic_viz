@@ -1,22 +1,32 @@
-h1,
-h2 {
-  font-family: Gotham;
-  text-indent: 50px;
-}
-
 svg {
   background-color: #f0f0f0;
 }
 
-rect.tiles {
-  stroke: #FEF0D9;
+p.source {
+	font-size: 8pt;
+	font-family: Lucidatypewriter, monospace;
+}
+
+rect.bar {
   stroke-width:3px;   
 }
 
-text.yearLabel,
-text.monthLabel,
+text.title {
+	font-size: 18pt;
+	font-family: Lucidatypewriter, monospace;
+	color: #2d2e2e;
+}
+
+text.subtitle {
+	font-size: 13pt;
+	font-family: Lucidatypewriter, monospace;
+	color: #2d2e2e;
+}
+
+text.xText,
+text.yText,
 text.legendLabel {
-  font-size: 12pt;
-  font-family: Consolas, courier;
-  fill: #888;
+  font-size: 10pt;
+  font-family: Lucidatypewriter, monospace;
+  color: #2d2e2e;
 }
