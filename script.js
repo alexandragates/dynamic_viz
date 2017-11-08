@@ -13,7 +13,8 @@ d3.json("hisp_uninsured_rates_json.json", function(error, data) {
         console.log(error); //if error, load error to console
       } else {
         console.log(data); //if data is correct, load data to console
-        dataset = data;
+        dataset = data.sort(function(x, y){
+          return d3.ascending(x.year, y.percent_hisp_uninsured_year); }) //create a variable and assign data to it
         makeBargraph(); //make a barchart
       }
     });
@@ -35,7 +36,6 @@ function makeBargraph() {
 
   // setup x scale
   var xScale = d3.scaleBand()
-    //.domain(d3.extent(dataset, function(d){ return d.year; }))
     .domain(years)
     .range([0, width])
     .padding(0.1);
@@ -46,27 +46,28 @@ function makeBargraph() {
   // setup y scale
   var yScale = d3.scaleLinear()
     .domain([0, d3.max(dataset, function (d) { return d.percent_hisp_uninsured_year; })])
-    .range([height, 0])
+    .range([0, height])
     .nice();
 
-  var xAxis = d3.axisBottom(xScale);
+  var xAxis = d3.axisTop(xScale);
   var yAxis = d3.axisLeft(yScale);
 
   // draw the axes
   var xAxisEle = svg.append('g')
   	.classed('x axis', true)
-  	.attr('transform', 'translate(0,' + height + ')')
+  	.attr('transform', 'translate(0,' + 30 + ')')
   	.call(xAxis);
 
   var yAxisEle = svg.append('g')
   	.classed('y axis', true)
+  	.attr('transform', 'translate(0,' + 30 + ')')
   	.call(yAxis);
 
   // add a label to the xAxis
   var xText = svg.append('text')             
       .attr("transform",
             "translate(" + (width/2) + " ," + 
-                           (height + 50) + ")")
+                           (0) + ")")
       .style("text-anchor", "middle")
       .style('font-size', 14)
       .text("Year");
@@ -96,10 +97,10 @@ function makeBargraph() {
     .attr('y', function(d) {
       // the y position is determined by the datum's uninsured rate
       // this value is the top edge of the rectangle
-      return yScale(d.percent_hisp_uninsured_year);
+      return 30;
     })
     .attr('height', function(d) {
       // the bar's height should align it with the base of the chart (y=0)
-      return height - yScale(d.percent_hisp_uninsured_year);
+      return yScale(d.percent_hisp_uninsured_year);
     });
 };
