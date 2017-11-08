@@ -9,9 +9,16 @@ var height = 400 - margin.top - margin.bottom;
 var colors = ['#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494']
 
 d3.json("hisp_uninsured_rates_json.json", function(error, data) {
-	dataset = data;
-	makeBargraph();
-});
+      if (error) {
+        console.log(error); //if error, load error to console
+      } else {
+        dataset = data,
+        console.log(dataset),
+        makeBargraph(); //make a barchart
+      }
+    });
+
+// code source: https://www.pshrmn.com/tutorials/d3/bar-charts/
 
 function makeBargraph() {
   // create and dertermine size of SVG
@@ -24,9 +31,9 @@ function makeBargraph() {
 
   // setup x scale
   var xScale = d3.scaleBand()
-    .domain(d3.extent(dataset, function(d){ return d.year; }))
+    .domain(d3.range(dataset.length))
     .range([0, width])
-    .paddingInner(0.1);
+    .padding(0.1);
   
   // width of the bar is determined by the x scale
   var bandwidth = xScale.bandwidth()
