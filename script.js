@@ -6,12 +6,12 @@ var height = 400 - margin.top - margin.bottom;
 
 d3.json('hisp_uninsured_rates_json.json', function(error, data) {
       if (error) {
-        console.log(error); //if error, load error to console
+        console.log(error); //if there's an error, tell me there's an error
       } else {
-        console.log(data); //if data is correct, load data to console
+        console.log(data); //print data to the console
         dataset = data.sort(function(x, y){
           return d3.ascending(x.year, y.percent_hisp_uninsured_year); }) //for the record: I would never put this data in ascending order like this.
-        makeBargraph(); //make a barchart
+        makeBargraph(); //make a bar graph
       }
     });
 
@@ -41,7 +41,7 @@ function makeBargraph() {
     .range([0, height])
     .nice();
 
-  // draw the axes
+  // draw the x and y axes
   var xAxisDraw = svg.append('g')
   	.attr('transform', 'translate(0,' + 30 + ')')
   	.attr('class', 'xaxis')
@@ -93,6 +93,7 @@ function makeBargraph() {
     	{if (d.percent_hisp_uninsured_year < 20) { return false}
     	else { console.log("true"); return true}})
 
+// create the legend for the lowest uninsured rate
 var legend1 = svg.append('g')
  	.attr('class', 'legend')
   	.attr('height', 100)
@@ -115,6 +116,7 @@ var legend1 = svg.append('g')
   	.attr('class', 'ltext')
   	.text('Lowest Uninsured Rate')
 
+// create the legend for not the lowest uninsured rate
 var legend2 = svg.append('g')
  	.attr('class', 'legend')
   	.attr('height', 100)
